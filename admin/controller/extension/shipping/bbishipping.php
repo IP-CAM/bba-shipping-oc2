@@ -9,7 +9,6 @@ class ControllerExtensionShippingBbishipping extends Controller {
 
 		$this->load->model('setting/setting');
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
-			print_r($this->request->post);
 			$this->model_setting_setting->editSetting('bbishipping', $this->request->post);
 			$this->session->data['success'] = $this->language->get('text_success');
 			$this->response->redirect($this->url->link('extension/extension', 'token=' . $this->session->data['token'] . '&type=shipping', true));
@@ -258,7 +257,7 @@ class ControllerExtensionShippingBbishipping extends Controller {
       $results = json_decode($response, true);
 			$data = array();
 			foreach ($results['content'] as $res) {
-				$data[] = array('id' => $res['name'], 'text' => $res['name']);
+				$data[] = array('id' => $res['id'], 'text' => $res['name']);
 			}
 			$data = $this->__remDuplicate("id",$data);
 			$state= array();

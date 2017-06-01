@@ -1,4 +1,3 @@
-
 <div class="panel panel-default">
   <div class="panel-heading">
     <h4 class="panel-title"><a href="#collapse-shipping" class="accordion-toggle" data-toggle="collapse" data-parent="#accordion"><?php echo $heading_title; ?> <i class="fa fa-caret-down"></i></a></h4>
@@ -7,8 +6,8 @@
     <div class="panel-body">
       <p><?php echo $text_shipping; ?></p>
       <div class="form-horizontal">
-
-        <!--<div class="form-group required">
+        <!--
+        <div class="form-group required">
           <label class="col-sm-2 control-label" for="input-country"><?php echo $entry_country; ?></label>
           <div class="col-sm-10">
             <select name="country_id" id="input-country" class="form-control">
@@ -37,12 +36,10 @@
           </div>
         </div>
         -->
-
         <div class="form-group required">
           <label class="col-sm-2 control-label" for="input-bbacountry"><?php echo $entry_country; ?></label>
           <div class="col-sm-10">
             <select name="bbacountry" id="input-bbacountry" class="form-control" style="width: 100%;">
-              <option value=""><?php echo $text_select;?></option>
             </select>
           </div>
         </div>
@@ -60,6 +57,7 @@
             </select>
           </div>
         </div>
+
         <div class="form-group required">
           <label class="col-sm-2 control-label" for="input-bbacity"><?php echo $entry_city; ?></label>
           <div class="col-sm-10">
@@ -86,7 +84,10 @@ $('#button-quote').on('click', function() {
 	$.ajax({
 		url: 'index.php?route=extension/total/shipping/quote',
 		type: 'post',
-		data: 'country_id=' + $('select[name=\'country_id\']').val() + '&zone_id=' + $('select[name=\'zone_id\']').val() + '&postcode=' + encodeURIComponent($('input[name=\'postcode\']').val()),
+    //frd
+		//data: 'country_id=' + $('select[name=\'country_id\']').val() + '&zone_id=' + $('select[name=\'zone_id\']').val() + '&postcode=' + encodeURIComponent($('input[name=\'postcode\']').val()),
+    data: 'country_id=' + $('select[name=\'country_id\']').val() + '&zone_id=' + $('select[name=\'zone_id\']').val() + '&postcode=' + encodeURIComponent($('input[name=\'postcode\']').val()) + '&bbacountry=' + $('select[name=\'bbacountry\']').val() + '&bbacity=' + $('select[name=\'bbacity\']').val() +
+    '&bbapostcode=' + $('select[name=\'bbapostcode\']').val(),
 		dataType: 'json',
 		beforeSend: function() {
 			$('#button-quote').button('loading');
@@ -136,13 +137,27 @@ $('#button-quote').on('click', function() {
 							html += '<div class="radio">';
 							html += '  <label>';
 
-							if (json['shipping_method'][i]['quote'][j]['code'] == '<?php echo $shipping_method; ?>') {
+							/*if (json['shipping_method'][i]['quote'][j]['code'] == '<?php echo $shipping_method; ?>') {
 								html += '<input type="radio" name="shipping_method" value="' + json['shipping_method'][i]['quote'][j]['code'] + '" checked="checked" />';
 							} else {
 								html += '<input type="radio" name="shipping_method" value="' + json['shipping_method'][i]['quote'][j]['code'] + '" />';
-							}
+							}*/
+              //frd
+              if (json['shipping_method'][i]['quote'][j]['code'] == '<?php echo $shipping_method; ?>') {
+                html += '<input type="radio" name="shipping_method" value="' + json['shipping_method'][i]['quote'][j]['code'] + '" checked="checked" />' + '<img src="' +  json['shipping_method'][i]['quote'][j]['icon'] + '" alt="" style="width:128px;height:64px;">';
+              } else {
+                html += '<input type="radio" name="shipping_method" value="' + json['shipping_method'][i]['quote'][j]['code'] + '" />' + '<img src="' +  json['shipping_method'][i]['quote'][j]['icon'] + '" alt="" style="width:128px;height:64px;">';
+              }
 
-							html += json['shipping_method'][i]['quote'][j]['title'] + ' - ' + json['shipping_method'][i]['quote'][j]['text'] + '</label></div>';
+
+							//html += json['shipping_method'][i]['quote'][j]['title'] + ' - ' + json['shipping_method'][i]['quote'][j]['text'] + '</label></div>';
+              //frd
+              if(typeof(json['shipping_method'][i]['quote'][j]['etd']) != "undefined" && json['shipping_method'][i]['quote'][j]['etd'] !== null) {
+                html += json['shipping_method'][i]['quote'][j]['title'] + ' - ' + json['shipping_method'][i]['quote'][j]['text'] + '<p style="font-size:85%;">Est: ' + json['shipping_method'][i]['quote'][j]['etd'] + '</p>' + '</label></div>';
+              } else {
+                html += json['shipping_method'][i]['quote'][j]['title'] + ' - ' + json['shipping_method'][i]['quote'][j]['text'] + '</label></div>';
+              }
+
 						}
 					} else {
 						html += '<div class="alert alert-danger">' + json['shipping_method'][i]['error'] + '</div>';
